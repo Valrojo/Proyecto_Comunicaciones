@@ -3,8 +3,7 @@ import cv2 as cv
 from scipy import fftpack
 
 def denoise(frame):
-    #
-    # Implementa la función que elimina el ruido de la imagen
+    # Función que elimina el ruido de la imagen
     def create_mask(dims, frequency, size=10):
        freq_int = int(frequency*dims[0])
        mask = np.ones(shape=(dims[0], dims[1]))
@@ -15,9 +14,10 @@ def denoise(frame):
     
     S_img= fftpack.fftshift(fftpack.fft2(frame))
     espectro_filtrado = S_img*create_mask(S_img.shape, 0.06)
-    img_reconstructed = np.real(fftpack.ifft2(fftpack.ifftshift(espectro_filtrado)))
     
-    return img_reconstructed
+    frame = np.real(fftpack.ifft2(fftpack.ifftshift(espectro_filtrado)))
+    
+    return frame
 
 def code(frame):
     #
