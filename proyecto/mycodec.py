@@ -1,6 +1,7 @@
 import numpy as np
 import cv2 as cv
 from scipy import fftpack
+from scipy.signal import medfilt
 
 def denoise(frame):
     # Función que elimina el ruido de la imagen
@@ -37,45 +38,58 @@ def code(img_filtered):
     colores_matrix = colores_matrix.astype(int)
     m = 5
     new_colores = np.array([x-x%m for x in colores_matrix])
-    colores_compressed = []
+    #Se comprimen en una lista de largo flexible
     strcolores_compressed = ""
 
     actual = new_colores[0, 0]
     anterior = actual
+    contador = 0
+
     for i in range(imsize[0]):
-    
-       contador = 0
     
        for j in range(imsize[1]):
         
-           actual = new_colores[i, j]
+          actual = new_colores[i, j]
         
-           if (new_colores[i, j] == anterior):
+          if (actual == anterior):
             
-              contador += 1
+             contador += 1
         
-           else:
+          else:
+             strcolores_compressed += str(contador) + "!" + str(anterior) + "!"
+             anterior = actual
+             contador = 1
             
-              colores_compressed.append(contador)
-              colores_compressed.append(anterior)
-              strcolores_compressed += str(contador) + "!" + str(anterior) + "!"
-              anterior = actual
-              
+    if (strcolores_compressed[-2] == str(actual)):
+        
+       strcolores_compressed += str(contador) + '!' + str(actual) + '!'
+  
+
     return strcolores_compressed
 
 def decode(message):
     #
     # Reemplaza la linea 24...
     #
-    message_decode = message.split("!")
-    lista = [message_decode[i:i+64] for i in range(0,len(message_decode),64)]
-    lista_bloques=[]
+    seq = message.split("!")
+    seq.pop()
+
+    lista_decompressed = []
+    for i in range(0,len(seq),2):
+       for j in range(int(seq[i])):
+          lista_decompressed.append(int(seq[i+1]))
+        
+    while (len(lista_decompressed)%64 != 0):
+       lista_decompressed.append(1)
+    lista = [lista_decompressed[i:i+64] for i in range(0,len(lista_decompressed),64)]
+    lista2=[]
     for i in lista:
-       lista_bloques.append([i[j:j+8] for j in range(0,len(i),8)])
-    #frame = np.frombuffer(bytes(memoryview(message)), dtype='uint8').reshape(480, 848)
-    #
-    # ...con tu implementación del bloque receptor: decodificador + transformación inversa
-    #    
-    return frame
+       lista2.append([i[j:j+8] for j in range(0,len(i),8)])
+    
+    lista3 = np.asarray(lista2)
+
+    lista3 = lista3.reshape(480,848)
+
+    return lista3
     
 

@@ -15,7 +15,7 @@ print("Cuadros por segundo: {0}".format(cam.get_fps()))
 for frame in cam:
     frame_denoise = denoise(frame)  
     message = code(frame_denoise)
-    socket.send(message)
+    socket.send_string(message)
     status = socket.recv()
     # print(status)
     
