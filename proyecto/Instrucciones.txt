@@ -1,0 +1,6 @@
+1)Tener Conda instalado
+2)Crear y levantar el ambiente ProyectoComunicaciones.yml
+3)Iniciar el codigo python receiver.py
+4)Iniciar el codigo python transmitter.py
+5)Se reproduce el video automaticamente!
+Se puede ver el recorrido que hacemos en el jupyter "Apuntes" 
