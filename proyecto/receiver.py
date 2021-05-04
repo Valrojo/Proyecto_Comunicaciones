@@ -12,7 +12,7 @@ socket.bind(f"tcp://*:{port}")
 
 
 while True:
-    message = socket.recv_string()
+    message = socket.recv_json()
     frame = decode(message)
     frame = frame.astype(np.uint8)
     cv.imshow("Torres del paine", frame)
